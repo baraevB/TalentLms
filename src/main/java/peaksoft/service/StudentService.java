@@ -6,7 +6,9 @@ import peaksoft.entity.Student;
 import peaksoft.repository.GroupRepository;
 import peaksoft.repository.StudentRepository;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -14,6 +16,14 @@ import java.util.List;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final GroupRepository groupRepository;
+    private final EntityManager entityManager;
+
+    public List<Student> getAllStudents() {
+        List<Student> students =entityManager.createQuery("from Student",Student.class).getResultList();
+        Comparator<Student> comparator=((o1, o2)->(int)(o1.getId()-o2.getId()));
+        students.sort(comparator);
+        return students;
+    }
 
     public Student create(Student student) {
         student.setCreated(LocalDate.now());
